@@ -1,0 +1,111 @@
+{% extends 'layout.html' %}
+
+{% block title%} {%endblock%}
+
+{%block head%}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+    
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css')}}">
+{%endblock%}
+
+{%block body%}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">GoodRead</a>
+    
+      <div class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h6>{{fName}} {{lName}}</h6>
+        <a href="{{url_for('logout')}}" class="btn btn-info btn-sm">
+          <i class="fas fa-sign-out-alt"></i>Log out
+        </a>
+      </div>
+    </nav>
+
+  <main>
+    <div class="mt-4">
+      <form action="/search" method='POST' class="d-flex justify-content-center form-inline mr-auto ml-md-1 my-2 my-md-2 mw-100 navbar-search">
+          <div class="input-group col-sm-7">
+              <input type="text" name="search-arg" class="form-control bg-light border-0 input-lg pt-3 pb-2 mr-2" placeholder="Search book..."
+                  aria-label="Search" aria-describedby="basic-addon2" id="search-input" required>
+              <div class="input-group-append">
+                  <button class="btn btn-primary pt-2" type="submit" id="search-btn">
+                      <i class="fas fa-search fa-sm"></i>
+                  </button>
+              </div>
+          </div>
+      </form>
+    </div>
+
+    
+    <div id="main-content" class="d-flex justify-content-center">
+		{%if volumes == []%}
+       <h1>No Result</h1>
+    {%endif%}
+		{% if volumes != None%}
+
+			{% for volume in volumes%}
+
+				<div class="card">
+					<div class="no-gutter">
+						{% set img="" %}
+						{%if 'imageLinks' in volume%} 
+							{% set img= volume['imageLinks']['smallThumbnail'] %}
+							<img class="card-img-top img-fluid" src="{{volume['imageLinks']['smallThumbnail']}}">
+						{%else%}
+							<img class="card-img-top img-fluid"  src="" alt="Image Not Available">
+						{%endif%}
+						<div class="card-body">
+              
+							<a href="/book?description={{volume['description']}}&title={{volume['title']}}&author={{volume['authors']}}&year={{volume['publishedDate']}}&avgR={{volume[ 'averageRating']}}&rateC={{ volume['ratingsCount'] }}&img={{img}}">
+                <p class="card-title m-0 p-0">{{volume['title']}}</p>
+              </a>
+							<span class="card-text m-0">by {{volume['authors']}}</span>
+							<span>| {{volume['publishedDate']}}</span><br>
+
+							{%if volume[ 'averageRating'] %}
+								<span>Average rating:	{{volume[ 'averageRating']}}</span><br>
+							{%endif%}
+
+							{%if volume['ratingsCount']%}
+								<span>Rate count:	{{ volume['ratingsCount'] }}</span>
+							{%endif%}
+							
+						
+							
+						</div>
+					</div>
+					
+				</div>
+
+			{%endfor%}
+		{%endif%}
+
+
+    </div>
+
+
+  </main>
+
+
+{%endblock%}
+
+
+
+{%block script%}
+<script src="https://kit.fontawesome.com/dec944d78f.js" crossorigin="anonymous"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+{%endblock%}

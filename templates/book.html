@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{%block title%}Boook Detail{%endblock%}
+
+{%block head%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css')}}">
+
+{%endblock%}
+
+{%block body%}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">GoodRead</a>
+    
+        <div class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+           
+        </ul>
+        <a href="{{url_for('logout')}}" class="btn btn-info btn-sm">
+            <i class="fas fa-sign-out-alt"></i>Log out
+        </a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="test">
+            <div class="" id="book-detail-card">
+                <div class="col-8">
+                    <h4 class=" mb-3">
+                        {{title}} 
+                        <span class="m-0">by {{author}}</span>
+                        <span>| {{year}}</span>
+                    </h4>
+                
+                    <h6>Average rate:   {{avgR}}</h6>
+                    <h6>Rate count:     {{rateC}}</h6>
+
+                    <h6>Description</h6>
+                    <p>{{description}}</p>
+                </div>
+              
+            </div>
+              
+        </div>
+        <div id="review-section" class="row mx-0">
+            <div class="col-8">
+                <h4>Reviews</h4>
+                {%if reviews%}
+                    
+                    {%for review in reviews%}
+                        <div id="users-review">
+                            <div>
+                                
+                                <h6><em>by {{review[1]}}</em></h6>
+                                <p>Rated: {{review[3]}}</p>
+                                <p id="review">{{review[2]}}</p>
+                            
+                            </div>
+                        </div>
+                    {%endfor%}
+                {%else%}
+                    <div>{{reviews}}</div>
+                {%endif%}
+            </div>
+           
+            <div id="review-submission" class="col-4">
+
+                <form action="/book?description={{description}}&title={{title}}&author={{author}}&year={{year}}&avgR={{avgR}}&rateC={{ rateC }}" method='POST'>
+
+                    <div class="form-group mb-0">     
+                        
+                    </div>
+                    <div class="form-group mt-0">
+                        <input type="text" name="title" id="title-input" placeholder="Book title" required>
+                        <textarea type="text" name="review" id="review" cols="30" rows="10" class="form-control" placeholder="Write review...." required></textarea>
+                    </div>
+                    <label for="quantity">Rate</label>
+                    <input type="number" id="rate" name="rate" min="1" max="5" required>
+                    {%if duplicate%}
+                        <input type="submit" value="submit" disabled>
+                    {%else%}
+                        <input type="submit" value="submit">
+                    {%endif%}
+                </form>
+            </div>
+
+        </div>
+       
+
+    </main>
+
+
+{%endblock%}

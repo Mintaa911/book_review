@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+{% from "formhelper.html" import render_field %}
+{%block title%}Register{%endblock%}
+
+{%block head%}
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css')}}">
+{%endblock%}
+
+{%block body%}
+
+<div id="login">
+        <h3 class="text-center text-white pt-5">Register form</h3>
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <form method="POST" class="form" id="login-form">
+                            <dl>
+                                {{ render_field(form.firstName, class="form-control") }}
+                                {{ render_field(form.lastName, class="form-control") }}
+                                {{ render_field(form.username, class="form-control") }}
+                                {{ render_field(form.email, class="form-control") }}
+                                {{ render_field(form.password, class="form-control") }}
+                                {{ render_field(form.confirm, class="form-control") }}
+                               
+                            </dl>
+                            <div id="login-link" class="text-right">
+                                <a href="{{url_for('login')}}" class="text-info">Login here</a>
+                            </div>
+                            <input type=submit value=Register class="btn btn-info btn-md">
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{%endblock%}
+
+{%block script%}
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{%endblock%}
