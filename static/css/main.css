@@ -8,6 +8,7 @@ body {
     background-color: #17a2b8;
     height: 100vh;
   }
+ 
   #login .container #login-row #login-column #login-box {
     margin-top: 3%;
     padding-bottom: 5%;
@@ -34,7 +35,7 @@ body {
     height: 300px;
   }
   .test{
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
   }
 
   
@@ -59,4 +60,10 @@ body {
   #main-content .card img{
   
     height: 150px;
+  }
+
+  #users-review #reviewer{
+    font-size: larger;
+    font-weight: bold;
+    font-style: italic;
   }
