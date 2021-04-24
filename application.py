@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, session, render_template, redirect, url_for, request,session,jsonify
+from flask import Flask, session, render_template, redirect, url_for, request,session,jsonify,abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -59,12 +59,15 @@ def index():
                     i = isbn 
                     if r != None and ("items" in r):
                         items = r["items"]
-                        volumes.append(items[0]['volumeInfo'])
+                        
+                        item = items[0]['volumeInfo']
+                        item["isbn"] = isbn
+                        volumes.append(item)
                     else:
                         break
     
             except Exception as e:
-                return render_template('index.html', volumes=e)
+                abort(500)
             
             return render_template("index.html", volumes=volumes, fName = session['first-name'], lName = session['last-name'], email = session['email'])
         else:
@@ -92,7 +95,7 @@ def login():
                 return redirect(url_for('index'))
 
         except:
-            pass 
+            abort(500)
         
         
     return render_template("login.html", form=form)
@@ -126,40 +129,48 @@ def logout():
 
 @app.route('/book', methods=["GET","POST"])
 def book():
+    isbn = str(request.args.get('isbn'))
+    title = request.args.get('title')
+    reviews = []
+    volume = ""
     rateSum = 0
     duplicate = False
-    description = request.args.get("description")
-    title = str(request.args.get("title")).strip()
-    author = request.args.get("author")
-    year = request.args.get("year")
-    avgR = request.args.get("avgR")
-    rateC = request.args.get("rateC")
-    img = request.args.get("img")
+   
+  
 
     if request.method == "POST":
-        Title = request.form.get('title')
+       
         review = str(request.form.get('review'))
         rate = int(request.form.get('rate'))
         username = session['username']
         try:
             db.execute("INSERT INTO reviews (title,username,review, rate) VALUES ( :title, :username, :review,:rate)",
-                    {"title": Title,"username":username,"review":review, "rate": rate}) 
+                    {"title": title,"username":username,"review":review, "rate": rate}) 
             db.commit() 
-         
+            
         except:
-            return 
-   
-    data = db.execute(f"SELECT * FROM reviews WHERE title= '{title}' ").fetchall()
-    reviews = []
-    for review in data:
-        reviews.append(review)
-        rateSum += review['rate']
-        if review['username'] == session['username']:
-            duplicate = True
-    if len(reviews) != 0:
-        avgR = (float(avgR) + round((rateSum/len(reviews)),2))/2
-        rateC = (float(rateC) + len(reviews))
-    return render_template("book.html",duplicate=duplicate, reviews=reviews, description = description,title=title,author=author,year=year,avgR=str(avgR),rateC=str(rateC),img=img)
+            abort(500)
+
+    r = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={isbn}").json()
+    if r != None and ("items" in r):
+        items = r["items"]
+        volume = items[0]["volumeInfo"]
+        volume['isbn'] = isbn
+     
+    
+    try:
+        data = db.execute(f"SELECT * FROM reviews WHERE title= '{title}' ").fetchall()
+        for review in data:
+            reviews.append(review)
+            rateSum += review['rate']
+            if review['username'] == session['username']:
+                duplicate = True
+    except:
+        abort(500)
+
+  
+    
+    return render_template("book.html",duplicate=duplicate, reviews=reviews, volume = volume)
 
 @app.route('/search', methods=['GET','POST'])
 def search():
@@ -167,6 +178,11 @@ def search():
     value = str(request.form.get("search-arg"))
     return redirect(url_for('index', search=True, value = value))
 
+@app.errorhandler(404)
+def page_not_found(error):
+   return render_template('error.html'), 404
+    
+@app.errorhandler(500)
+def internal_error(error):
 
-    
-    
+    return render_template('error.html'), 500
