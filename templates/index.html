@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title%} {%endblock%}
+{% block title%}Home{%endblock%}
 
 {%block head%}
 
@@ -18,11 +18,7 @@
       <a class="navbar-brand" href="#">GoodRead</a>
     
       <div class="collapse navbar-collapse" id="navbarToggler">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-        </ul>
+  
       </div>
 
       <div>
@@ -33,7 +29,7 @@
       </div>
     </nav>
 
-  <main>
+  <main id="home">
     <div class="mt-4">
       <form action="/search" method='POST' class="d-flex justify-content-center form-inline mr-auto ml-md-1 my-2 my-md-2 mw-100 navbar-search">
           <div class="input-group col-sm-7">
@@ -54,9 +50,8 @@
        <h1>No Result</h1>
     {%endif%}
 		{% if volumes != None%}
-
+      
 			{% for volume in volumes%}
-
 				<div class="card">
 					<div class="no-gutter">
 						{% set img="" %}
@@ -68,7 +63,7 @@
 						{%endif%}
 						<div class="card-body">
               
-							<a href="/book?description={{volume['description']}}&title={{volume['title']}}&author={{volume['authors']}}&year={{volume['publishedDate']}}&avgR={{volume[ 'averageRating']}}&rateC={{ volume['ratingsCount'] }}&img={{img}}">
+							<a href="/book?isbn={{volume['isbn']}}&title={{volume['title']}}">
                 <p class="card-title m-0 p-0">{{volume['title']}}</p>
               </a>
 							<span class="card-text m-0">by {{volume['authors']}}</span>
