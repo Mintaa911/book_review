@@ -186,3 +186,26 @@ def page_not_found(error):
 def internal_error(error):
 
     return render_template('error.html'), 500
+
+@app.route('/api/<isbn>')
+def api(isbn):
+    jsonFormat = {}
+    r = requests.get("https://www.googleapis.com/books/v1/volumes?q={isbn}").json()
+    if r != None and ("items" in r):
+        items = r["items"]
+        volume = items[0]["volumeInfo"]
+        jsonFormat['title'] = volume['title']
+        jsonFormat['author'] = volume['authors']
+        jsonFormat['publication_date'] = volume['publishedDate']
+        jsonFormat['isbn'] = isbn
+        if "averageRating" in volume:
+            jsonFormat['averageRate'] = volume[ "averageRating"]
+        else:
+            jsonFormat['averageRate'] = ""
+        if "ratingsCount" in volume:
+            jsonFormat['reviewCount'] = volume["ratingsCount"]
+        else:
+            jsonFormat['reviewCount'] = ""
+        return jsonify(body=jsonFormat),200
+    else:
+        abort(400)
