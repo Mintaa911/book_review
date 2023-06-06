@@ -1,7 +1,3 @@
-# Project: Books Review
-The project is book review website.
-Project 1 for 3rd year first semester Web programming 1 course, Addis Ababa Inistitue of Technology.
-
 # Objectives
 
 1. Become more comfortable with Python.
